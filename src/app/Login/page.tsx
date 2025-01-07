@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import * as S from './styles';
-import { Form, Input, Button, Typography, AutoComplete } from 'antd';
+import { Form, Input, Button, Typography, AutoComplete, message } from 'antd';
+import { useAuth } from '@/context/authContext';
+import api from '@/app/components/api/api';
 import { useEmailAutocomplete } from '../utils/useEmailAutocomplete';
 
 const { Link } = Typography;
@@ -10,9 +12,21 @@ const { Link } = Typography;
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const { suggestions, handleEmailChange } = useEmailAutocomplete();
+  const { updateAuthData } = useAuth(); // Hook do contexto de autenticação
 
-  const onFinish = (values: { email: string; password: string }) => {
-    console.log('Success:', values);
+  const onFinish = async (values: { email: string; password: string }) => {
+    try {
+      const response = await api.post('/auth/login', values); // Requisição para a API de login
+      const { token } = response.data;
+
+      // Atualiza o contexto de autenticação com o token
+      updateAuthData({ authToken: token, userID: null, companyID: null, userName: null, companyName: null, userType: [] });
+
+      message.success('Login realizado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      message.error('Falha ao realizar login. Verifique suas credenciais.');
+    }
   };
 
   const onFinishFailed = (errorInfo: unknown) => {

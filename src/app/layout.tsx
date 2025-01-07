@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Poetsen_One } from "next/font/google";
+import { AuthProvider } from "@/context/authContext";
 
 const poetsenOne = Poetsen_One({
-  weight: ["400"], 
+  weight: ["400"],
   subsets: ["latin"],
 });
 
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="pt-br" className={poetsenOne.className} style={{ color: "red" }}>
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
