@@ -1,6 +1,17 @@
+* {
+  font-family: 'Poetsen One', sans-serif !important;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --azul-forte: #02075d;
+  --cinza-texto: #666666;
+  --preto: #000000;
+  --branco: #ffffff;
+  --azul-claro: #3f51b5;
+  --azul-texto: #30455c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,9 +30,30 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Poetsen One', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+
+  
+  .ant-btn-primary {
+    background-color: var(--azul-claro);
+    color: var(--branco);
+    font-weight: 500;
+    border: none;
+    font-size: 14px;
+    height: 32px;
+    padding: 4px 15px;
+    border-radius: 6px;
+  }
+
+  .ant-btn-primary:hover {
+    background-color: var(--azul-forte) !important;
+  }
+
+  .ant-form-item-required {
+    color: var(--cinza-texto) !important;
+  }
 }
 
 * {
