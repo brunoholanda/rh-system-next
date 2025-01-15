@@ -3,29 +3,43 @@
 import React, { useState } from 'react';
 import * as S from './styles';
 import { Form, Input, Button, Typography, AutoComplete, message } from 'antd';
-import { useAuth } from '@/context/authContext';
-import api from '@/app/components/api/api';
-import { useEmailAutocomplete } from '../utils/useEmailAutocomplete';
+import { useEmailAutocomplete } from '../../utils/useEmailAutocomplete';
+import { login } from '../../services/authService';
+import { useRouter } from 'next/navigation';
 
 const { Link } = Typography;
 
-const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  linkName: string;
+}
+
+const LoginPage: React.FC<LoginPageProps> = ({ linkName }) => {
   const [email, setEmail] = useState('');
   const { suggestions, handleEmailChange } = useEmailAutocomplete();
-  const { updateAuthData } = useAuth(); // Hook do contexto de autenticação
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const onFinish = async (values: { email: string; password: string }) => {
+    setLoading(true);
     try {
-      const response = await api.post('/auth/login', values); // Requisição para a API de login
-      const { token } = response.data;
-
-      // Atualiza o contexto de autenticação com o token
-      updateAuthData({ authToken: token, userID: null, companyID: null, userName: null, companyName: null, userType: [] });
+      const response = await login(linkName, values.email, values.password);
+      console.log('Resposta da API de login:', response);
+      sessionStorage.setItem('authToken', response.access_token);
+      sessionStorage.setItem('userType', response.user_type);
 
       message.success('Login realizado com sucesso!');
+
+      // Redirecionar com base no user_type
+      if (response.user_type === 'consignador') {
+        router.push('/consignador');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
       message.error('Falha ao realizar login. Verifique suas credenciais.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,7 +87,7 @@ const LoginPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" block>
+            <Button type="primary" htmlType="submit" block loading={loading}>
               Entrar
             </Button>
           </Form.Item>
