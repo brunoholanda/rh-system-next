@@ -10,8 +10,8 @@ const poetsenOne = Poetsen_One({
 
 
 export const metadata: Metadata = {
-  title: "RH-Sistema",
-  description: "O melhor gerenciador de Pessoas",
+  title: "Isis Consig",
+  description: "O melhor processador de consigna'",
 };
 
 export default function RootLayout({

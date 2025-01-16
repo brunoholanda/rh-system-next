@@ -47,12 +47,16 @@ const ConsignadorPage: React.FC = () => {
     
       // Redirecionar para a página de atendimento com o nome do servidor
       router.push(`/atendimento?nome=${encodeURIComponent(servidor.nome)}`);
-      
-      if (response.data.length === 0) {
+      sessionStorage.setItem('servidorSelecionado', JSON.stringify(servidor));
+
+      if (servidores.length === 0) {
         message.warning('Nenhum servidor encontrado com os critérios informados.');
       } else {
-        setServidores(response.data);
+        setServidores(servidores);
         message.success('Servidores encontrados!');
+        // Salva o servidor no sessionStorage
+        sessionStorage.setItem('servidorSelecionado', JSON.stringify(servidores[0]));
+        router.push('/atendimento');
       }
     } catch (error) {
       console.error('Erro ao pesquisar servidores:', error);
